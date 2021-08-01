@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/kwokky/kais-blog-svc/config"
 	"github.com/kwokky/kais-blog-svc/library/ecode"
 	"github.com/kwokky/kais-blog-svc/library/http"
 	"log"
@@ -79,7 +80,7 @@ func List(c *http.Context) {
 
 	size, err := strconv.ParseInt(sizeStr, 10, 64)
 	if err != nil {
-		page = 1
+		size = int64(config.Get().Default.PageSize)
 	}
 
 	list, err := svr.ListPost(page, size, tag, category)

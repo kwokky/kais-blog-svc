@@ -10,8 +10,8 @@ type Service struct {
 }
 
 func New() *Service {
-	srv := &Service{
+	svc := &Service{
 		Db: model.DB(),
 	}
-	return srv
+	return svc
 }

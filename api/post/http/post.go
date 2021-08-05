@@ -1,32 +1,25 @@
 package http
 
 import (
+	"github.com/kwokky/kais-blog-svc/api/post/param"
 	"github.com/kwokky/kais-blog-svc/config"
 	"github.com/kwokky/kais-blog-svc/library/ecode"
 	"github.com/kwokky/kais-blog-svc/library/http"
-	"log"
 	"strconv"
 )
 
 // Create 创建文章
 func Create(c *http.Context) {
-	var (
-		title       = c.GetParam("title")
-		content     = c.GetParam("content")
-		author      = c.GetParam("author")
-		categoryStr = c.GetParam("category_id")
-	)
-
-	categoryId, err := strconv.ParseInt(categoryStr, 10, 64)
-	if err != nil {
-		log.Printf("strconv.ParseInt(%s) error(%v)", categoryStr, err)
-		c.Response(nil, ecode.RequestError)
+	var params param.CreatePostParams
+	if err := c.Bind(&params); err != nil {
+		c.Response(nil, ecode.ServerError)
 		return
 	}
 
-	err = svr.CreatePost(title, content, author, categoryId)
+	err := svr.CreatePost(params)
 	if err != nil {
 		c.Response(nil, err)
+		return
 	}
 
 	c.Response(nil, nil)
@@ -34,31 +27,23 @@ func Create(c *http.Context) {
 
 // Update 修改文章
 func Update(c *http.Context) {
-	var (
-		title       = c.GetParam("title")
-		content     = c.GetParam("content")
-		author      = c.GetParam("author")
-		categoryStr = c.GetParam("category_id")
-		idStr       = c.Param("id")
-	)
-
-	id, err := strconv.ParseInt(idStr, 10, 64)
-	if err != nil {
-		log.Printf("strconv.ParseInt(%s) error(%v)", idStr, err)
-		c.Response(nil, ecode.RequestError)
+	var params param.UpdatePostParams
+	if err := c.Bind(&params); err != nil {
+		c.Response(nil, ecode.ServerError)
 		return
 	}
 
-	categoryId, err := strconv.ParseInt(categoryStr, 10, 64)
+	var err error
+	params.ID, err = strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		log.Printf("strconv.ParseInt(%s) error(%v)", categoryStr, err)
-		c.Response(nil, ecode.RequestError)
+		c.Response(nil, ecode.ServerError)
 		return
 	}
 
-	err = svr.UpdatePost(id, title, content, author, categoryId)
+	err = svr.UpdatePost(params.ID, params)
 	if err != nil {
 		c.Response(nil, err)
+		return
 	}
 
 	c.Response(nil, nil)
@@ -66,24 +51,21 @@ func Update(c *http.Context) {
 
 // List 文章列表
 func List(c *http.Context) {
-	var (
-		pageStr     = c.GetParam("page")
-		sizeStr     = c.GetParam("size")
-		tag      = c.GetParam("tag")
-		category = c.GetParam("category_id")
-	)
-
-	page, err := strconv.ParseInt(pageStr, 10, 64)
-	if err != nil {
-		page = 1
+	var params param.ListPostParams
+	if err := c.Bind(&params); err != nil {
+		c.Response(nil, ecode.ServerError)
+		return
 	}
 
-	size, err := strconv.ParseInt(sizeStr, 10, 64)
-	if err != nil {
-		size = int64(config.Get().Default.PageSize)
+	if params.Size == 0 {
+		params.Size = config.Get().PageSize
 	}
 
-	list, err := svr.ListPost(page, size, tag, category)
+	if params.Page == 0 {
+		params.Page = 1
+	}
+
+	list, err := svr.ListPost(params)
 	if err != nil {
 		c.Response(nil, err)
 	}

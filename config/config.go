@@ -10,7 +10,7 @@ type Config struct {
 	Debug    bool `toml:"debug"`
 	Port     int  `toml:"port"`
 	Database `toml:"database"`
-	Default     `toml:"default"`
+	Default  `toml:"default"`
 }
 
 type Database struct {
@@ -22,7 +22,7 @@ type Database struct {
 }
 
 type Default struct {
-	PageSize int
+	PageSize int64
 }
 
 var (

@@ -1,15 +1,18 @@
 package service
 
-import "github.com/kwokky/kais-blog-svc/library/ecode"
+import (
+	"github.com/kwokky/kais-blog-svc/api/post/param"
+	"github.com/kwokky/kais-blog-svc/library/ecode"
+)
 
-func (s *Service) checkCreatePost(title, content, author string) error {
-	if title == "" {
+func (s *Service) checkCreatePost(params param.CreatePostParams) error {
+	if params.Title == "" {
 		return ecode.PostTitleEmpty
 	}
-	if content == "" {
+	if params.Content == "" {
 		return ecode.PostContentEmpty
 	}
-	if author == "" {
+	if params.Author == "" {
 		return ecode.PostAuthorEmpty
 	}
 

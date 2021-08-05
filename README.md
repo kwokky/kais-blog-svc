@@ -1,1 +1,1 @@
-# Kais blog service
+# Kais blog server

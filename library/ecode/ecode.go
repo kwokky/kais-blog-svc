@@ -18,7 +18,7 @@ var (
 
 // registerMessage 注册错误信息
 func registerMessage() {
-	messages := []map[Code]string{PostMessage, CommonMessage}
+	messages := []map[Code]string{PostMessage, CommonMessage, CategoryMessage}
 	newMsg := make(map[Code]string)
 	for _, messageMap := range messages {
 		for code, msg := range messageMap {

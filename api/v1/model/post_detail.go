@@ -19,7 +19,10 @@ func NewPostDetailResponse(post *model.Post) *Post {
 		Content:    post.Content,
 		Author:     post.Author,
 		CategoryId: post.CategoryId,
-		CreatedAt:  post.CreatedAt.Format("2006-01-02 15:04"),
 	}
+	if !post.CreatedAt.IsZero() {
+		p.CreatedAt = post.CreatedAt.Format("2006-01-02 15:04")
+	}
+
 	return p
 }

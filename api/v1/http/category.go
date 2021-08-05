@@ -2,21 +2,20 @@ package http
 
 import (
 	"github.com/kwokky/kais-blog-svc/api/v1/param"
-	"github.com/kwokky/kais-blog-svc/config"
 	"github.com/kwokky/kais-blog-svc/library/ecode"
 	"github.com/kwokky/kais-blog-svc/library/http"
 	"strconv"
 )
 
-// PostCreate 创建文章
-func PostCreate(c *http.Context) {
-	var params param.CreatePostParams
+// CreateCreate 创建分类
+func CreateCreate(c *http.Context) {
+	var params param.CategoryCreateParams
 	if err := c.Bind(&params); err != nil {
 		c.Response(nil, ecode.ServerError)
 		return
 	}
 
-	err := svr.PostCreate(params)
+	err := svr.CategoryCreate(params)
 	if err != nil {
 		c.Response(nil, err)
 		return
@@ -25,9 +24,9 @@ func PostCreate(c *http.Context) {
 	c.Response(nil, nil)
 }
 
-// PostUpdate 修改文章
-func PostUpdate(c *http.Context) {
-	var params param.UpdatePostParams
+// CategoryUpdate 修改分类
+func CategoryUpdate(c *http.Context) {
+	var params param.CategoryUpdateParams
 	if err := c.Bind(&params); err != nil {
 		c.Response(nil, ecode.ServerError)
 		return
@@ -40,7 +39,7 @@ func PostUpdate(c *http.Context) {
 		return
 	}
 
-	err = svr.PostUpdate(params.ID, params)
+	err = svr.CategoryUpdate(params.ID, params)
 	if err != nil {
 		c.Response(nil, err)
 		return
@@ -49,23 +48,17 @@ func PostUpdate(c *http.Context) {
 	c.Response(nil, nil)
 }
 
-// PostList 文章列表
-func PostList(c *http.Context) {
-	var params param.ListPostParams
+// CategoryList 分类列表
+func CategoryList(c *http.Context) {
+	var params param.CategoryListParams
 	if err := c.Bind(&params); err != nil {
 		c.Response(nil, ecode.ServerError)
 		return
 	}
 
-	if params.Size == 0 {
-		params.Size = config.Get().PageSize
-	}
+	handlePageSize(&params.Page, &params.Size)
 
-	if params.Page == 0 {
-		params.Page = 1
-	}
-
-	list, err := svr.PostList(params)
+	list, err := svr.CategoryList(params)
 	if err != nil {
 		c.Response(nil, err)
 		return
@@ -75,18 +68,18 @@ func PostList(c *http.Context) {
 
 }
 
-// PostDetail 文章详情
-func PostDetail(c *http.Context) {
-	var params param.DetailPostParams
+// CategoryDetail 分类详情
+func CategoryDetail(c *http.Context) {
+	var params param.CategoryDetailParams
 	var err error
 
-	params.Id, err = strconv.ParseInt(c.Param("id"), 10, 64)
+	params.ID, err = strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		c.Response(nil, ecode.ServerError)
 		return
 	}
 
-	detail, err := svr.PostDetail(params)
+	detail, err := svr.CategoryDetail(params)
 	if err != nil {
 		c.Response(nil, err)
 		return
@@ -95,18 +88,18 @@ func PostDetail(c *http.Context) {
 	c.Response(detail, nil)
 }
 
-// PostDelete 删除文章
-func PostDelete(c *http.Context) {
-	var params param.DeletePostParams
+// CategoryDelete 删除分类
+func CategoryDelete(c *http.Context) {
+	var params param.CategoryDeleteParams
 	var err error
 
-	params.Id, err = strconv.ParseInt(c.Param("id"), 10, 64)
+	params.ID, err = strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		c.Response(nil, ecode.ServerError)
 		return
 	}
 
-	err = svr.PostDelete(params)
+	err = svr.CategoryDelete(params)
 	if err != nil {
 		c.Response(nil, err)
 		return

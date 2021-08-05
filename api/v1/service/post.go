@@ -2,15 +2,15 @@ package service
 
 import (
 	"fmt"
-	rspModel "github.com/kwokky/kais-blog-svc/api/model"
-	"github.com/kwokky/kais-blog-svc/api/param"
+	rspModel "github.com/kwokky/kais-blog-svc/api/v1/model"
+	"github.com/kwokky/kais-blog-svc/api/v1/param"
 	"github.com/kwokky/kais-blog-svc/library/ecode"
 	"github.com/kwokky/kais-blog-svc/model"
 	"log"
 )
 
-func (s *Service) CreatePost(params param.CreatePostParams) (err error) {
-	if err := s.checkCreatePost(params); err != nil {
+func (s *Service) PostCreate(params param.PostCreateParams) (err error) {
+	if err := s.checkPostCreateParams(params); err != nil {
 		return err
 	}
 
@@ -23,7 +23,7 @@ func (s *Service) CreatePost(params param.CreatePostParams) (err error) {
 	return
 }
 
-func (s *Service) UpdatePost(id int64, params param.UpdatePostParams) (err error) {
+func (s *Service) PostUpdate(id int64, params param.PostUpdateParams) (err error) {
 	var post model.Post
 	res := s.Db.First(&post, id)
 	if res.RowsAffected <= 0 {
@@ -41,7 +41,7 @@ func (s *Service) UpdatePost(id int64, params param.UpdatePostParams) (err error
 	return
 }
 
-func (s *Service) ListPost(params param.ListPostParams) (postList *rspModel.PostList, err error) {
+func (s *Service) PostList(params param.PostListParams) (*rspModel.PostList, error) {
 	var (
 		pmodel     model.Post
 		posts      []*model.Post
@@ -74,30 +74,31 @@ func (s *Service) ListPost(params param.ListPostParams) (postList *rspModel.Post
 	return rspModel.NewPostListResponse(posts, total), nil
 }
 
-func (s *Service) DetailPost(params param.DetailPostParams) (detail *rspModel.Post, err error) {
-	if params.Id == 0 {
+func (s *Service) PostDetail(params param.PostDetailParams) (detail *rspModel.Post, err error) {
+	if params.ID == 0 {
 		err = ecode.PostParamError
 		return
 	}
 
 	var post model.Post
-	res := s.Db.First(&post, params.Id)
+	res := s.Db.First(&post, params.ID)
 	if res.RowsAffected <= 0 {
 		err = ecode.PostNotFound
 		return
 	}
 
-	return rspModel.NewPostDetailResponse(&post), nil
+	detail = rspModel.NewPostDetailResponse(&post)
+	return
 }
 
-func (s *Service) DeletePost(params param.DeletePostParams) (err error) {
-	if params.Id == 0 {
+func (s *Service) PostDelete(params param.PostDeleteParams) (err error) {
+	if params.ID == 0 {
 		err = ecode.PostParamError
 		return
 	}
 
 	var post model.Post
-	res := s.Db.Delete(&post, params.Id)
+	res := s.Db.Delete(&post, params.ID)
 	if res.RowsAffected <= 0 {
 		err = ecode.PostDeleteError
 		return

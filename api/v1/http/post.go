@@ -1,22 +1,21 @@
 package http
 
 import (
-	"github.com/kwokky/kais-blog-svc/api/param"
-	"github.com/kwokky/kais-blog-svc/config"
+	"github.com/kwokky/kais-blog-svc/api/v1/param"
 	"github.com/kwokky/kais-blog-svc/library/ecode"
 	"github.com/kwokky/kais-blog-svc/library/http"
 	"strconv"
 )
 
-// Create 创建文章
-func Create(c *http.Context) {
-	var params param.CreatePostParams
+// PostCreate 创建文章
+func PostCreate(c *http.Context) {
+	var params param.PostCreateParams
 	if err := c.Bind(&params); err != nil {
 		c.Response(nil, ecode.ServerError)
 		return
 	}
 
-	err := svr.CreatePost(params)
+	err := svr.PostCreate(params)
 	if err != nil {
 		c.Response(nil, err)
 		return
@@ -25,9 +24,9 @@ func Create(c *http.Context) {
 	c.Response(nil, nil)
 }
 
-// Update 修改文章
-func Update(c *http.Context) {
-	var params param.UpdatePostParams
+// PostUpdate 修改文章
+func PostUpdate(c *http.Context) {
+	var params param.PostUpdateParams
 	if err := c.Bind(&params); err != nil {
 		c.Response(nil, ecode.ServerError)
 		return
@@ -40,7 +39,7 @@ func Update(c *http.Context) {
 		return
 	}
 
-	err = svr.UpdatePost(params.ID, params)
+	err = svr.PostUpdate(params.ID, params)
 	if err != nil {
 		c.Response(nil, err)
 		return
@@ -49,23 +48,17 @@ func Update(c *http.Context) {
 	c.Response(nil, nil)
 }
 
-// List 文章列表
-func List(c *http.Context) {
-	var params param.ListPostParams
+// PostList 文章列表
+func PostList(c *http.Context) {
+	var params param.PostListParams
 	if err := c.Bind(&params); err != nil {
 		c.Response(nil, ecode.ServerError)
 		return
 	}
 
-	if params.Size == 0 {
-		params.Size = config.Get().PageSize
-	}
+	handlePageSize(&params.Page, &params.Size)
 
-	if params.Page == 0 {
-		params.Page = 1
-	}
-
-	list, err := svr.ListPost(params)
+	list, err := svr.PostList(params)
 	if err != nil {
 		c.Response(nil, err)
 		return
@@ -75,18 +68,18 @@ func List(c *http.Context) {
 
 }
 
-// Detail 文章详情
-func Detail(c *http.Context) {
-	var params param.DetailPostParams
+// PostDetail 文章详情
+func PostDetail(c *http.Context) {
+	var params param.PostDetailParams
 	var err error
 
-	params.Id, err = strconv.ParseInt(c.Param("id"), 10, 64)
+	params.ID, err = strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		c.Response(nil, ecode.ServerError)
 		return
 	}
 
-	detail, err := svr.DetailPost(params)
+	detail, err := svr.PostDetail(params)
 	if err != nil {
 		c.Response(nil, err)
 		return
@@ -95,18 +88,18 @@ func Detail(c *http.Context) {
 	c.Response(detail, nil)
 }
 
-// Delete 删除文章
-func Delete(c *http.Context) {
-	var params param.DeletePostParams
+// PostDelete 删除文章
+func PostDelete(c *http.Context) {
+	var params param.PostDeleteParams
 	var err error
 
-	params.Id, err = strconv.ParseInt(c.Param("id"), 10, 64)
+	params.ID, err = strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		c.Response(nil, ecode.ServerError)
 		return
 	}
 
-	err = svr.DeletePost(params)
+	err = svr.PostDelete(params)
 	if err != nil {
 		c.Response(nil, err)
 		return

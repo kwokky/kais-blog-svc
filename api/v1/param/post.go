@@ -1,32 +1,27 @@
 package param
 
-type CreatePostParams struct {
+type PostCreateParams struct {
 	Title      string `form:"title"`
 	Content    string `form:"content"`
 	Author     string `form:"author"`
 	CategoryId int64  `form:"category_id"`
 }
 
-type UpdatePostParams struct {
-	CreatePostParams
+type PostUpdateParams struct {
+	PostCreateParams
 	ID int64 `form:"id"`
 }
 
-type PageParams struct {
-	Page int64 `form:"page"`
-	Size int64 `form:"size"`
-}
-
-type ListPostParams struct {
+type PostListParams struct {
 	PageParams
 	Tag      string `form:"tag"`
 	Category string `form:"category"`
 }
 
-type DetailPostParams struct {
-	Id int64 `form:"id"`
+type PostDetailParams struct {
+	ID int64 `form:"id"`
 }
 
-type DeletePostParams struct {
-	Id int64 `form:"id"`
+type PostDeleteParams struct {
+	ID int64 `form:"id"`
 }

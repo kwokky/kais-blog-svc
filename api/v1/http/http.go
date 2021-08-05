@@ -2,7 +2,7 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kwokky/kais-blog-svc/api/post/service"
+	"github.com/kwokky/kais-blog-svc/api/service"
 	"github.com/kwokky/kais-blog-svc/library/http"
 )
 

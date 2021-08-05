@@ -1,7 +1,7 @@
 package http
 
 import (
-	"github.com/kwokky/kais-blog-svc/api/post/param"
+	"github.com/kwokky/kais-blog-svc/api/param"
 	"github.com/kwokky/kais-blog-svc/config"
 	"github.com/kwokky/kais-blog-svc/library/ecode"
 	"github.com/kwokky/kais-blog-svc/library/http"

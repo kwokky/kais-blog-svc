@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/kwokky/kais-blog-svc/api/post/param"
+	"github.com/kwokky/kais-blog-svc/api/param"
 	"github.com/kwokky/kais-blog-svc/library/ecode"
 )
 

@@ -2,8 +2,8 @@ package service
 
 import (
 	"fmt"
-	rspModel "github.com/kwokky/kais-blog-svc/api/post/model"
-	"github.com/kwokky/kais-blog-svc/api/post/param"
+	rspModel "github.com/kwokky/kais-blog-svc/api/model"
+	"github.com/kwokky/kais-blog-svc/api/param"
 	"github.com/kwokky/kais-blog-svc/library/ecode"
 	"github.com/kwokky/kais-blog-svc/model"
 	"log"

@@ -8,4 +8,5 @@ var (
 	PostUpdateError  = New(10005)
 	PostDeleteError  = New(10006)
 	PostNotFound     = New(10007)
+	PostParamError   = New(10008)
 )

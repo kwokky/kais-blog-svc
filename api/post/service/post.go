@@ -20,7 +20,7 @@ func (s *Service) CreatePost(params param.CreatePostParams) (err error) {
 		log.Printf("新增文章失败 %s", err)
 		return ecode.PostCreateError
 	}
-	return nil
+	return
 }
 
 func (s *Service) UpdatePost(id int64, params param.UpdatePostParams) (err error) {
@@ -38,7 +38,7 @@ func (s *Service) UpdatePost(id int64, params param.UpdatePostParams) (err error
 		return
 	}
 
-	return nil
+	return
 }
 
 func (s *Service) ListPost(params param.ListPostParams) (postList *rspModel.PostList, err error) {
@@ -54,8 +54,8 @@ func (s *Service) ListPost(params param.ListPostParams) (postList *rspModel.Post
 	query := s.Db.Model(&pmodel).Offset(int(offset)).Limit(int(params.Size)).Select(field)
 
 	if params.Tag != "" {
-		assocJoinStr := fmt.Sprintf("JOIN `%s` AS assoc ON assoc.`post_id` = %s.`id`", model.PostTag{}.TableName(), ptablename)
-		tagJoinStr := fmt.Sprintf("JOIN `%s` AS tag ON assoc.`tag_id` = tag.`id`", model.Tag{}.TableName())
+		assocJoinStr := fmt.Sprintf("JOIN `%s` AS assoc ON `assoc`.`post_id` = `%s`.`id`", model.PostTag{}.TableName(), ptablename)
+		tagJoinStr := fmt.Sprintf("JOIN `%s` AS tag ON `assoc`.`tag_id` = `tag`.`id`", model.Tag{}.TableName())
 		query = query.Joins(assocJoinStr).Joins(tagJoinStr).Where("tag.name = ?", params.Tag)
 	}
 
@@ -64,7 +64,7 @@ func (s *Service) ListPost(params param.ListPostParams) (postList *rspModel.Post
 		query = query.Where("category_id = (?)", subQuery)
 	}
 
-	res := query.Debug().Find(&posts)
+	res := query.Find(&posts)
 	if res.RowsAffected == 0 {
 		return rspModel.NewPostListResponse([]*model.Post{}, 0), nil
 	}
@@ -72,4 +72,36 @@ func (s *Service) ListPost(params param.ListPostParams) (postList *rspModel.Post
 	s.Db.Model(&pmodel).Count(&total)
 
 	return rspModel.NewPostListResponse(posts, total), nil
+}
+
+func (s *Service) DetailPost(params param.DetailPostParams) (detail *rspModel.Post, err error) {
+	if params.Id == 0 {
+		err = ecode.PostParamError
+		return
+	}
+
+	var post model.Post
+	res := s.Db.First(&post, params.Id)
+	if res.RowsAffected <= 0 {
+		err = ecode.PostNotFound
+		return
+	}
+
+	return rspModel.NewPostDetailResponse(&post), nil
+}
+
+func (s *Service) DeletePost(params param.DeletePostParams) (err error) {
+	if params.Id == 0 {
+		err = ecode.PostParamError
+		return
+	}
+
+	var post model.Post
+	res := s.Db.Delete(&post, params.Id)
+	if res.RowsAffected <= 0 {
+		err = ecode.PostDeleteError
+		return
+	}
+
+	return
 }

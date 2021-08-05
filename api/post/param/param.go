@@ -22,3 +22,11 @@ type ListPostParams struct {
 	Tag      string `form:"tag"`
 	Category string `form:"category"`
 }
+
+type DetailPostParams struct {
+	Id int64 `form:"id"`
+}
+
+type DeletePostParams struct {
+	Id int64 `form:"id"`
+}

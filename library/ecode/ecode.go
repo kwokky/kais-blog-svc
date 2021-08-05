@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"strconv"
+	"sync"
 	"sync/atomic"
 )
 
@@ -12,7 +13,21 @@ type Code int
 var (
 	_messages atomic.Value
 	_codes    = map[int]struct{}{}
+	once      sync.Once
 )
+
+// registerMessage 注册错误信息
+func registerMessage() {
+	messages := []map[Code]string{PostMessage, CommonMessage}
+	newMsg := make(map[Code]string)
+	for _, messageMap := range messages {
+		for code, msg := range messageMap {
+			newMsg[code] = msg
+		}
+	}
+
+	Register(newMsg)
+}
 
 // Register 注册错误码信息
 func Register(cm map[Code]string) {
@@ -53,8 +68,11 @@ func (c Code) Code() int {
 }
 
 func (c Code) Message() string {
-	if cm, ok := _messages.Load().(map[int]string); ok {
-		if msg, ok := cm[c.Code()]; ok {
+	once.Do(func() {
+		registerMessage()
+	})
+	if cm, ok := _messages.Load().(map[Code]string); ok {
+		if msg, ok := cm[c]; ok {
 			return msg
 		}
 	}

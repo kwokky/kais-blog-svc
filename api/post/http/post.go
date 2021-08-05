@@ -68,6 +68,7 @@ func List(c *http.Context) {
 	list, err := svr.ListPost(params)
 	if err != nil {
 		c.Response(nil, err)
+		return
 	}
 
 	c.Response(list, nil)
@@ -76,10 +77,40 @@ func List(c *http.Context) {
 
 // Detail 文章详情
 func Detail(c *http.Context) {
+	var params param.DetailPostParams
+	var err error
 
+	params.Id, err = strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.Response(nil, ecode.ServerError)
+		return
+	}
+
+	detail, err := svr.DetailPost(params)
+	if err != nil {
+		c.Response(nil, err)
+		return
+	}
+
+	c.Response(detail, nil)
 }
 
 // Delete 删除文章
 func Delete(c *http.Context) {
+	var params param.DeletePostParams
+	var err error
 
+	params.Id, err = strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.Response(nil, ecode.ServerError)
+		return
+	}
+
+	err = svr.DeletePost(params)
+	if err != nil {
+		c.Response(nil, err)
+		return
+	}
+
+	c.Response(nil, nil)
 }

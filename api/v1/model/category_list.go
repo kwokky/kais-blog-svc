@@ -13,7 +13,7 @@ type CategoryList struct {
 func NewCategoryListResponse(categories []*model.Category, total int64) *CategoryList {
 	list := make([]*Category, 0, len(categories))
 	for _, category := range categories {
-		c:= NewCategoryDetailResponse(category)
+		c := NewCategoryDetailResponse(category)
 		list = append(list, c)
 	}
 

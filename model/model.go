@@ -11,6 +11,11 @@ import (
 
 var db *gorm.DB
 
+const (
+	_maxOpenConn     = 100
+	_connMaxLifetime = 10 * time.Second
+)
+
 func initDB() {
 	conf := config.Get().Database
 
@@ -29,8 +34,8 @@ func initDB() {
 		log.Fatal("获取数据库实例失败", err)
 	}
 
-	sqlDB.SetMaxOpenConns(100)
-	sqlDB.SetConnMaxLifetime(10 * time.Second)
+	sqlDB.SetMaxOpenConns(_maxOpenConn)
+	sqlDB.SetConnMaxLifetime(_connMaxLifetime)
 
 	autoMigrate()
 }
